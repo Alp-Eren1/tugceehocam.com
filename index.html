@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tuğçe Öğretmen</title>
+  <style>
+    /* Arka plan: yeşil - beyaz gradient + matematik fonksiyon efekti */
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      color: #222;
+      background: linear-gradient(120deg, #2ecc71, #ffffff);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px 20px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    header h2 {
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: #34495e;
+      opacity: 0.9;
+    }
+
+    /* Hakkımda kısmı */
+    .about {
+      max-width: 900px;
+      margin: 50px auto;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 30px;
+      border-radius: 15px;
+      line-height: 1.8;
+      font-size: 1.2rem;
+      text-align: justify;
+      color: #2c3e50;
+    }
+
+    /* Slider */
+    .slider {
+      position: relative;
+      max-width: 700px;
+      margin: 80px auto;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.6s ease-in-out;
+    }
+
+    .slides img {
+      width: 700px;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    /* Butonlar */
+    .prev, .next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+
+    .prev { left: 15px; }
+    .next { right: 15px; }
+
+    .dots {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .dot {
+      height: 12px;
+      width: 12px;
+      margin: 0 4px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .active {
+      background-color: #2ecc71;
+    }
+
+    /* İletişim */
+    .contact {
+      text-align: center;
+      margin: 50px 0;
+      font-size: 1.2rem;
+      color: #2c3e50;
+    }
+
+    .contact a {
+      color: #2ecc71;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .contact a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bgCanvas"></canvas>
+
+  <header>
+    <h1>Tuğçe Öğretmen</h1>
+    <h2>Matematiği Sevdiren Öğretmen</h2>
+  </header>
+
+  <section class="about">
+    <p>
+      Fen lisesi mezunu bir öğretmen olarak, matematiği hem akademik hem de günlük yaşamda anlaşılır ve eğlenceli hale getirmeyi seviyorum. Öğrencilerimle ders işlerken en verimli yöntemleri kullanarak matematiği korkulan bir ders olmaktan çıkarıp, onların severek çalıştığı bir ders haline getirmeyi amaçlıyorum. 
+    </p>
+    <p>
+      Bunun için en güvenilir kaynakları ve modern öğretim tekniklerini kullanıyor, her öğrencime farklı bir bakış açısı kazandırmaya çalışıyorum. En büyük hedefim, sadece iyi bir öğretmen olmak değil, aynı zamanda öğrencilerimin hayatlarına dokunmak, başarı yolculuklarına eşlik etmek ve bu başarıda pay sahibi olabilmek.
+    </p>
+  </section>
+
+  <section class="slider">
+    <div class="slides" id="slides">
+      <img src="5974543879946488573_121.jpg" alt="Resim 1">
+      <img src="5974543879946488574_121.jpg" alt="Resim 2">
+      <img src="5974543879946488575_121.jpg" alt="Resim 3">
+      <img src="5974543879946488576_121.jpg" alt="Resim 4">
+      <img src="5974543879946488577_121.jpg" alt="Resim 5">
+      <img src="5974543879946488578_121.jpg" alt="Resim 6">
+      <img src="5974543879946488579_121.jpg" alt="Resim 7">
+    </div>
+    <button class="prev" onclick="moveSlide(-1)">❮</button>
+    <button class="next" onclick="moveSlide(1)">❯</button>
+    <div class="dots" id="dots"></div>
+  </section>
+
+  <section class="contact">
+    <p>Bana Instagram üzerinden ulaşabilirsin: <a href="https://instagram.com/tugceehocam" target="_blank">@tugceehocam</a></p>
+  </section>
+
+  <script>
+    // Slider Script
+    let index = 0;
+    const slides = document.getElementById("slides");
+    const total = slides.children.length;
+    const dotsContainer = document.getElementById("dots");
+
+    for (let i = 0; i < total; i++) {
+      let dot = document.createElement("span");
+      dot.classList.add("dot");
+      dot.addEventListener("click", () => moveToSlide(i));
+      dotsContainer.appendChild(dot);
+    }
+
+    function updateDots() {
+      let dots = document.querySelectorAll(".dot");
+      dots.forEach(dot => dot.classList.remove("active"));
+      dots[index].classList.add("active");
+    }
+
+    function moveSlide(step) {
+      index = (index + step + total) % total;
+      slides.style.transform = `translateX(-${index * 700}px)`;
+      updateDots();
+    }
+
+    function moveToSlide(n) {
+      index = n;
+      slides.style.transform = `translateX(-${index * 700}px)`;
+      updateDots();
+    }
+
+    updateDots();
+
+    // Matematik fonksiyonu (sinüs eğrisi)
+    const canvas = document.getElementById("bgCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    function draw() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.strokeStyle = "rgba(0,0,0,0.15)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for(let x=0; x<canvas.width; x++){
+        let y = canvas.height/2 + 80 * Math.sin(x*0.01 + Date.now()*0.002);
+        ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+      requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
+</body>
+</html>
